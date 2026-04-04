@@ -124,6 +124,11 @@ public class PlayerController : MonoBehaviour
             cc.Move(moveDirection);
     }
 
+    public bool IsMoving()
+    {
+        return canMove && moveDirection.sqrMagnitude > 0f;
+    }
+
     private void StaminaCheck()
     {
         bool running = input.GetActionKey(InputAction.Run);
@@ -135,6 +140,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (!running && stamina < maxStamina)
         {
+            if (IsMoving()) return;
             stamina += staminaRate * Time.deltaTime;
         }
 
