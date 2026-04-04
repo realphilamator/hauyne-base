@@ -1,15 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Handles first-person player movement, mouse look, and stamina.
-/// Requires a CharacterController component on the same GameObject.
-/// Uses InputManager for rebindable input.
-///
-/// Hierarchy:
-///   Player        (this script + CharacterController)
-///     Main Camera (CameraScript)
-/// </summary>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
@@ -133,15 +124,6 @@ public class PlayerController : MonoBehaviour
             cc.Move(moveDirection);
     }
 
-    // -------------------------------------------------------------------------
-    // Stamina
-    // -------------------------------------------------------------------------
-
-    /// <summary>
-    /// Drains stamina while running and moving. Recovers stamina while not running.
-    /// Stamina is clamped to a small negative floor to prevent flickering at zero.
-    /// Updates the staminaBar UI if assigned.
-    /// </summary>
     private void StaminaCheck()
     {
         bool running = input.GetActionKey(InputAction.Run);
@@ -149,7 +131,7 @@ public class PlayerController : MonoBehaviour
         if (cc.velocity.magnitude > 0.1f && running && stamina > 0f)
         {
             stamina -= staminaRate * Time.deltaTime;
-            stamina = Mathf.Max(stamina, -5f); // Small negative floor prevents flickering at the zero boundary
+            stamina = Mathf.Max(stamina, -5f);
         }
         else if (!running && stamina < maxStamina)
         {
