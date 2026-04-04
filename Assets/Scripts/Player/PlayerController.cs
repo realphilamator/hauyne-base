@@ -1,0 +1,162 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>
+/// Handles first-person player movement, mouse look, and stamina.
+/// Requires a CharacterController component on the same GameObject.
+/// Uses InputManager for rebindable input.
+///
+/// Hierarchy:
+///   Player        (this script + CharacterController)
+///     Main Camera (CameraScript)
+/// </summary>
+[RequireComponent(typeof(CharacterController))]
+public class PlayerController : MonoBehaviour
+{
+    // -------------------------------------------------------------------------
+    // Inspector Fields
+    // -------------------------------------------------------------------------
+
+    [Header("Movement")]
+    /// <summary>Movement speed while walking.</summary>
+    public float walkSpeed = 10f;
+    /// <summary>Movement speed while running (requires stamina).</summary>
+    public float runSpeed = 16f;
+
+    [Header("Stamina")]
+    /// <summary>Maximum stamina value. Stamina depletes while running and recovers at rest.</summary>
+    public float maxStamina = 100f;
+    /// <summary>Rate at which stamina drains while running and recovers while not running (units/sec).</summary>
+    public float staminaRate = 10f;
+    /// <summary>Optional UI Slider to display stamina. Assign in the Inspector.</summary>
+    public Slider staminaBar;
+
+    [Header("Mouse Look")]
+    /// <summary>Horizontal mouse sensitivity. Loaded from PlayerPrefs at start ("MouseSensitivity").</summary>
+    public float mouseSensitivity = 3f;
+
+    [Header("References")]
+    /// <summary>The CharacterController used for movement. Auto-assigned if not set in the Inspector.</summary>
+    public CharacterController cc;
+
+    // -------------------------------------------------------------------------
+    // Public State
+    // -------------------------------------------------------------------------
+
+    /// <summary>Set to false to freeze all player movement and rotation.</summary>
+    public bool canMove = true;
+
+    /// <summary>Current stamina value. Read by other scripts (e.g. CameraScript) to check run state.</summary>
+    public float stamina;
+
+    // -------------------------------------------------------------------------
+    // Private State
+    // -------------------------------------------------------------------------
+
+    /// <summary>The Y position the player is locked to. Set from the initial transform position.</summary>
+    private float height;
+
+    private float playerSpeed;
+    private float targetYaw;        // Accumulated horizontal mouse input, applied directly each frame
+    private Quaternion playerRotation;
+    private Vector3 moveDirection;
+
+    private InputManager input;
+
+    // -------------------------------------------------------------------------
+    // Unity Messages
+    // -------------------------------------------------------------------------
+
+    private void Start()
+    {
+        input = Singleton<InputManager>.Instance;
+
+        // Lock the player to their starting Y position (no gravity/vertical movement)
+        height = transform.position.y;
+
+        stamina = maxStamina;
+        playerRotation = transform.rotation;
+        targetYaw = transform.eulerAngles.y;
+
+        // Load mouse sensitivity from settings, defaulting to 1 if not saved
+        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 3f);
+
+        if (cc == null)
+            cc = GetComponent<CharacterController>();
+    }
+
+    private void Update()
+    {
+        // Keep the player at a fixed height — vertical movement is not supported
+        if (canMove)
+            transform.position = new Vector3(transform.position.x, height, transform.position.z);
+
+        MouseMove();
+        PlayerMove();
+        StaminaCheck();
+    }
+
+    // -------------------------------------------------------------------------
+    // Input & Movement
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Reads horizontal mouse input and applies it directly to the player's yaw rotation.
+    /// </summary>
+    private void MouseMove()
+    {
+        targetYaw += Input.GetAxis("Mouse X") * mouseSensitivity * Time.timeScale;
+        playerRotation.eulerAngles = new Vector3(playerRotation.eulerAngles.x, targetYaw, 0f);
+        transform.rotation = playerRotation;
+    }
+
+    /// <summary>
+    /// Reads movement input, calculates move direction, and moves the CharacterController.
+    /// Running is only allowed while stamina is above zero.
+    /// </summary>
+    private void PlayerMove()
+    {
+        Vector3 movement = Vector3.zero;
+        Vector3 lateral = Vector3.zero;
+
+        if (input.GetActionKey(InputAction.MoveForward)) movement = transform.forward;
+        if (input.GetActionKey(InputAction.MoveBackward)) movement = -transform.forward;
+        if (input.GetActionKey(InputAction.MoveLeft)) lateral = -transform.right;
+        if (input.GetActionKey(InputAction.MoveRight)) lateral = transform.right;
+
+        bool running = input.GetActionKey(InputAction.Run) && stamina > 0f;
+        playerSpeed = running ? runSpeed : walkSpeed;
+
+        moveDirection = (movement + lateral).normalized * playerSpeed * Time.deltaTime;
+
+        if (canMove)
+            cc.Move(moveDirection);
+    }
+
+    // -------------------------------------------------------------------------
+    // Stamina
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Drains stamina while running and moving. Recovers stamina while not running.
+    /// Stamina is clamped to a small negative floor to prevent flickering at zero.
+    /// Updates the staminaBar UI if assigned.
+    /// </summary>
+    private void StaminaCheck()
+    {
+        bool running = input.GetActionKey(InputAction.Run);
+
+        if (cc.velocity.magnitude > 0.1f && running && stamina > 0f)
+        {
+            stamina -= staminaRate * Time.deltaTime;
+            stamina = Mathf.Max(stamina, -5f); // Small negative floor prevents flickering at the zero boundary
+        }
+        else if (!running && stamina < maxStamina)
+        {
+            stamina += staminaRate * Time.deltaTime;
+        }
+
+        if (staminaBar != null)
+            staminaBar.value = stamina / maxStamina * 100f;
+    }
+}
