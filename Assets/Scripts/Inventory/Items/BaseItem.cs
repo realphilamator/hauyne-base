@@ -40,7 +40,7 @@ public class BaseItem : ScriptableObject
 
     [BoxGroup("Identity")]
     [Tooltip("The icon shown in the inventory slot. Assign a Texture asset.")]
-    public Texture icon;
+    public Sprite icon;
 
     [BoxGroup("Pickup")]
     [Tooltip("Must match the name of the pickup GameObject in the scene exactly. " +
