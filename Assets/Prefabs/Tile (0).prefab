@@ -16,8 +16,8 @@ GameObject:
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 18
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 26
   m_IsActive: 1
 --- !u!4 &8206046996571288627
 Transform:
@@ -114,8 +114,8 @@ GameObject:
   m_Name: Wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 18
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 26
   m_IsActive: 1
 --- !u!4 &8206046996940595682
 Transform:
@@ -249,8 +249,8 @@ GameObject:
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 18
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 26
   m_IsActive: 1
 --- !u!4 &8206046997407582698
 Transform:
@@ -543,8 +543,8 @@ GameObject:
   m_Name: Wall (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 18
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 26
   m_IsActive: 1
 --- !u!4 &8206046998175712925
 Transform:
