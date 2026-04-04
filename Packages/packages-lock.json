@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.dbrizov.naughtyattributes": {
-      "version": "file:C:/Users/Classic/Downloads/stuff/NaughtyAttributes-2.1.4/NaughtyAttributes-2.1.4",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "com.unity.burst": {
       "version": "1.8.2",
       "depth": 1,
