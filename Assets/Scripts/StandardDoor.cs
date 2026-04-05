@@ -101,10 +101,14 @@ public class StandardDoor : MonoBehaviour
     [ContextMenu("Unlock Door")]
     void UnlockDoorContext() => LockDoor(false);
 
-    public void LockDoor(bool lockState)
+    public void LockDoor(bool lockState, float duration = 15f)
     {
         locked = lockState;
         PlaySound(lockState ? lockSound : unlockSound);
+        if (lockState == true)
+        {
+            lockTime = duration;
+        }
     }
 
     void PlaySound(DoorSound sound)
@@ -119,18 +123,11 @@ public class StandardDoor : MonoBehaviour
         if (other.CompareTag("NPC") && !isOpen && !isLocked)
         {
             OpenDoor();
+        }
     }
-
     private void OnTriggerStay(Collider other)
     {
         if ((other.CompareTag("Player") || other.CompareTag("NPC")) && isOpen)
             openTime = openDuration;
-    }
-
-    public void LockDoor(float duration)
-    {
-        CloseDoor();
-        isLocked = true;
-        lockTime = duration;
     }
 }
