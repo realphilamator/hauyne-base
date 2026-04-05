@@ -8,9 +8,20 @@ public class StandardDoor : MonoBehaviour
     [SerializeField] MeshRenderer inDoor, outDoor;
     [SerializeField] Material openMat, closedMat;
     float openTime = 0f;
+    bool isLocked = false;
+    float lockTime = 0f;
 
     private void Update()
     {
+        if (isLocked)
+        {
+            lockTime -= Time.deltaTime;
+            if (lockTime <= 0f)
+            {
+                isLocked = false;
+            }
+        }
+
         if (isOpen)
         {
             openTime -= Time.deltaTime;
@@ -25,6 +36,9 @@ public class StandardDoor : MonoBehaviour
 
     void Interact() // PLACEHOLDER VOID, THERE MUST BE A PLAYER INTERACTION SCRIPT THAT CALLS INTERACTION FUNCTIONS LIKE THIS ONE
     {
+        if (isLocked)
+            return;
+
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f)); // RAYCAST IS PLACEHOLDER TOO BLAH BLAH BLAH
         Transform player = GameObject.FindGameObjectWithTag("Player").transform;
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance) && Input.GetMouseButtonDown(0) && Time.timeScale != 0f)
@@ -57,7 +71,7 @@ public class StandardDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("NPC") && !isOpen)
+        if (other.CompareTag("NPC") && !isOpen && !isLocked)
         {
             OpenDoor();
         }
@@ -69,5 +83,12 @@ public class StandardDoor : MonoBehaviour
         {
             openTime = openDuration;
         }
+    }
+
+    public void LockDoor(float duration)
+    {
+        CloseDoor();
+        isLocked = true;
+        lockTime = duration;
     }
 }
