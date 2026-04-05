@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using NaughtyAttributes;
 
 #if UNITY_EDITOR
@@ -46,10 +47,23 @@ public class SegmentedBar : MonoBehaviour
         get => _value;
         set
         {
-            _value = Mathf.Clamp01(value);
+            float clamped = Mathf.Clamp01(value);
+            if (Mathf.Approximately(clamped, _value)) return;
+
+            _value = clamped;
             Refresh();
+            if (Application.isPlaying)
+                onValueChanged.Invoke(_value);
         }
     }
+
+    // ─────────────────────────────────────────────
+    //  Events
+    // ─────────────────────────────────────────────
+
+    [BoxGroup("Events")]
+    [Tooltip("Invoked at runtime whenever Value changes. Passes the new value (0-1).")]
+    public UnityEvent<float> onValueChanged = new UnityEvent<float>();
 
     // ─────────────────────────────────────────────
     //  Bars
@@ -96,7 +110,6 @@ public class SegmentedBar : MonoBehaviour
             return;
 
         int total = _segments.Count;
-        // Round to nearest so 0.65 x 10 = 6.5 -> 7 filled segments
         int filledCount = Mathf.RoundToInt(_value * total);
 
         for (int i = 0; i < total; i++)
@@ -120,21 +133,18 @@ public class SegmentedBar : MonoBehaviour
     {
         Value = max > 0f ? current / max : 0f;
     }
-
-    /// <summary>Animate toward a target value over time. Use with StartCoroutine.</summary>
-    public System.Collections.IEnumerator AnimateTo(float targetValue, float duration)
+    public void ChangeValue(int num)
     {
-        float start = _value;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
+        if (num > 10)
         {
-            elapsed += Time.deltaTime;
-            Value = Mathf.Lerp(start, targetValue, elapsed / duration);
-            yield return null;
+            Debug.LogError("Input Number is greater than 10! (" + num.ToString() + "), defaulting back to 10.");
+            num = 10;
+        } else if (num == 0)
+        {
+            Debug.LogError("Input Number can't be equal to 0! (" + num.ToString() + ")");
+            return;
         }
-
-        Value = targetValue;
+        Value += num / 10f;
     }
 
     // ─────────────────────────────────────────────
