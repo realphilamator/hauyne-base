@@ -65,6 +65,8 @@ public class DitherTransition : MonoBehaviour
     {
         transitionActive = true;
 
+        PixelCursor.Instance.Hide(true);
+
         // Wait for end of frame to capture screen
         yield return new WaitForEndOfFrame();
 
@@ -98,6 +100,7 @@ public class DitherTransition : MonoBehaviour
         snapshotOverlay.gameObject.SetActive(false);
         ditherMask.gameObject.SetActive(false); // hide this too!
         Destroy(screenshot);
+        PixelCursor.Instance.Hide(false);
         transitionActive = false;
     }
 }

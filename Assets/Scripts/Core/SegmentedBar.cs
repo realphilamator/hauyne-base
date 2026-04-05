@@ -36,18 +36,51 @@ public class SegmentedBar : MonoBehaviour
     // ─────────────────────────────────────────────
 
     [BoxGroup("Value")]
-    [Range(0f, 1f)]
+    [Tooltip("The minimum allowed value of the bar.")]
     [OnValueChanged(nameof(Refresh))]
-    [Tooltip("Fill amount from 0 (empty) to 1 (completely full).")]
-    [SerializeField] private float _value = 1f;
+    [SerializeField] private float _minValue = 0f;
 
-    /// <summary>Gets or sets the fill value (0-1). Refreshes the bar immediately.</summary>
+    [BoxGroup("Value")]
+    [Tooltip("The maximum allowed value of the bar.")]
+    [OnValueChanged(nameof(Refresh))]
+    [SerializeField] private float _maxValue = 10f;
+
+    /// <summary>The minimum allowed value. Clamped to be no greater than MaxValue.</summary>
+    public float MinValue
+    {
+        get => _minValue;
+        set
+        {
+            _minValue = Mathf.Min(value, _maxValue);
+            _value = Mathf.Clamp(_value, _minValue, _maxValue);
+            Refresh();
+        }
+    }
+
+    /// <summary>The maximum allowed value. Clamped to be no less than MinValue.</summary>
+    public float MaxValue
+    {
+        get => _maxValue;
+        set
+        {
+            _maxValue = Mathf.Max(value, _minValue);
+            _value = Mathf.Clamp(_value, _minValue, _maxValue);
+            Refresh();
+        }
+    }
+
+    [BoxGroup("Value")]
+    [OnValueChanged(nameof(Refresh))]
+    [Tooltip("Current value between MinValue and MaxValue.")]
+    [SerializeField] private float _value = 10f;
+
+    /// <summary>Gets or sets the current value (MinValue–MaxValue). Refreshes the bar immediately.</summary>
     public float Value
     {
         get => _value;
         set
         {
-            float clamped = Mathf.Clamp01(value);
+            float clamped = Mathf.Clamp(value, _minValue, _maxValue);
             if (Mathf.Approximately(clamped, _value)) return;
 
             _value = clamped;
@@ -110,7 +143,9 @@ public class SegmentedBar : MonoBehaviour
             return;
 
         int total = _segments.Count;
-        int filledCount = Mathf.RoundToInt(_value * total);
+        float range = _maxValue - _minValue;
+        float normalised = range > 0f ? (_value - _minValue) / range : 0f;
+        int filledCount = Mathf.RoundToInt(normalised * total);
 
         for (int i = 0; i < total; i++)
         {
@@ -128,23 +163,57 @@ public class SegmentedBar : MonoBehaviour
     //  Convenience API
     // ─────────────────────────────────────────────
 
-    /// <summary>Set value from a current/max pair (e.g. HP).</summary>
+    /// <summary>Set value from a current/max pair (e.g. HP). Maps onto [MinValue, MaxValue].</summary>
     public void SetValue(float current, float max)
     {
-        Value = max > 0f ? current / max : 0f;
+        float normalised = max > 0f ? current / max : 0f;
+        Value = _minValue + Mathf.Clamp01(normalised) * (_maxValue - _minValue);
     }
+    /// <summary>Returns the number of segments currently showing the filled sprite.</summary>
+    public int FilledSegmentCount
+    {
+        get
+        {
+            if (_segments == null) return 0;
+            int count = 0;
+            foreach (var seg in _segments)
+                if (seg != null && seg.sprite == filledSprite) count++;
+            return count;
+        }
+    }
+
     public void ChangeValue(int num)
     {
-        if (num > 10)
+        float range = _maxValue - _minValue;
+        if (range <= 0f)
         {
-            Debug.LogError("Input Number is greater than 10! (" + num.ToString() + "), defaulting back to 10.");
-            num = 10;
-        } else if (num == 0)
+            Debug.LogError("SegmentedBar: MinValue and MaxValue are equal — cannot change value.");
+            return;
+        }
+
+        if (num == 0)
         {
             Debug.LogError("Input Number can't be equal to 0! (" + num.ToString() + ")");
             return;
         }
-        Value += num / 10f;
+
+        int filled = FilledSegmentCount;
+        int total = _segments != null ? _segments.Count : 0;
+
+        if (num < 0 && filled == 0)
+        {
+            Debug.LogWarning("SegmentedBar: Already at 0 filled segments, cannot decrease further.");
+            return;
+        }
+
+        if (num > 0 && filled == total)
+        {
+            Debug.LogWarning("SegmentedBar: All " + total + " segments already filled, cannot increase further.");
+            return;
+        }
+
+        float step = range / Mathf.Max(total, 1);
+        Value = Mathf.Clamp(_value + num * step, _minValue, _maxValue);
     }
 
     // ─────────────────────────────────────────────
