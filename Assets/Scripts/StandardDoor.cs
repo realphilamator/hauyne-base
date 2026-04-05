@@ -26,6 +26,8 @@ public class StandardDoor : MonoBehaviour
     private ManagedAudioSource managedAudioSource;
     private AudioSource audioSource;
     float openTime = 0f;
+    bool isLocked = false;
+    float lockTime = 0f;
 
     private void Start()
     {
@@ -35,6 +37,15 @@ public class StandardDoor : MonoBehaviour
 
     private void Update()
     {
+        if (isLocked)
+        {
+            lockTime -= Time.deltaTime;
+            if (lockTime <= 0f)
+            {
+                isLocked = false;
+            }
+        }
+
         if (isOpen)
         {
             openTime -= Time.deltaTime;
@@ -46,7 +57,10 @@ public class StandardDoor : MonoBehaviour
 
     void Interact()
     {
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f));
+        if (isLocked)
+            return;
+
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f)); // RAYCAST IS PLACEHOLDER TOO BLAH BLAH BLAH
         Transform player = GameObject.FindGameObjectWithTag("Player").transform;
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance) && Input.GetMouseButtonDown(0) && Time.timeScale != 0f)
         {
@@ -102,7 +116,8 @@ public class StandardDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("NPC") && !isOpen)
+        if (other.CompareTag("NPC") && !isOpen && !isLocked)
+        {
             OpenDoor();
     }
 
@@ -110,5 +125,12 @@ public class StandardDoor : MonoBehaviour
     {
         if ((other.CompareTag("Player") || other.CompareTag("NPC")) && isOpen)
             openTime = openDuration;
+    }
+
+    public void LockDoor(float duration)
+    {
+        CloseDoor();
+        isLocked = true;
+        lockTime = duration;
     }
 }
