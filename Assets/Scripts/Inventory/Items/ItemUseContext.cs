@@ -25,4 +25,6 @@ public class ItemUseContext
     /// For items with specific sounds, store the AudioClip on the item itself and play it here.
     /// </summary>
     public AudioSource audioSource;
+
+    public InteractHandler interactHandler;
 }

@@ -1,10 +1,32 @@
 {
-  "localizations": [
-    { "key": "Sfx_Doors_StandardOpen", "value": "*Door opens*" },
-    { "key": "Sfx_Doors_StandardShut", "value": "*SLAM!*" },
-    { "key": "Sfx_Doors_StandardLocked", "value": "*Rattling*" },
-    { "key": "Sfx_Doors_StandardLock", "value": "*Click!*" },
-    { "key": "Sfx_Doors_StandardUnlock", "value": "*Unclick!*" },
-    { "key": "Sfx_Doors_Swinging", "value": "*Swinging door opens*" }
-  ]
+    "localizations": [
+        {
+            "key": "Sfx_Doors_StandardOpen",
+            "value": "*Door opens*"
+        },
+        {
+            "key": "Sfx_Doors_StandardShut",
+            "value": "*SLAM!*"
+        },
+        {
+            "key": "Sfx_Doors_StandardLocked",
+            "value": "*Rattling*"
+        },
+        {
+            "key": "Sfx_Doors_StandardLock",
+            "value": "*Click!*"
+        },
+        {
+            "key": "Sfx_Doors_StandardUnlock",
+            "value": "*Unclick!*"
+        },
+        {
+            "key": "Sfx_Doors_Swinging",
+            "value": "*Swinging door opens*"
+        },
+        {
+            "key": "Sfx_Fountain_Drink",
+            "value": "*Slurp*"
+        }
+    ]
 }

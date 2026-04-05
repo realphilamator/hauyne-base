@@ -56,6 +56,12 @@ public class ManagedAudioSource : MonoBehaviour
             SubtitleManager.Instance.SpawnSubtitle(this, transform, keyToUse);
     }
 
+    public void SetClipAndPlay(AudioClip clip, string subtitleKeyOverride = null)
+    {
+        audioSource.clip = clip;
+        Play(subtitleKeyOverride);
+    }
+
     public float GetSubtitleScale(Transform cameraTransform)
     {
         return Mathf.Max(1f - Vector3.Distance(cameraTransform.position, transform.position) / audioSource.maxDistance, 0f);

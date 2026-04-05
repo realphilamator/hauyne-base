@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 97af1adde8c194e4fa5f1fc83daccb39
+guid: 8b96ea1c628f7df45bd58af36f774c74
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: NotebookSheet_0
+      name: NotebookIcon_Sheet_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 386
-        width: 98
-        height: 124
+        x: 0
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 93577cb4589058d4196f68bc2614cfb6
-      internalID: 1071562719
+      spriteID: 86b0f2ebe62d5b14093e42615bbc3dff
+      internalID: 1405674963
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NotebookSheet_1
+      name: NotebookIcon_Sheet_1
       rect:
         serializedVersion: 2
-        x: 102
-        y: 386
-        width: 98
-        height: 124
+        x: 64
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,20 +152,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b7411ebb60d0fc240b8694e51bbe0e05
-      internalID: -1708043424
+      spriteID: f5099f4cdf1f21a4489de77f42d5238a
+      internalID: -309753842
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NotebookSheet_2
+      name: NotebookIcon_Sheet_2
       rect:
         serializedVersion: 2
-        x: 1
-        y: 258
-        width: 98
-        height: 124
+        x: 128
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0ac2339b536fee84c9299e201b5ca2d2
-      internalID: -866215528
+      spriteID: 079a2e9636005d648b11f97b959c9a48
+      internalID: 1048741018
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NotebookSheet_3
+      name: NotebookIcon_Sheet_3
       rect:
         serializedVersion: 2
-        x: 102
-        y: 258
-        width: 98
-        height: 124
+        x: 192
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,20 +194,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d2d4b2509e32c0445891bba12f357098
-      internalID: 1196356499
+      spriteID: 278bfc251ff8b5749bcb873241f878b0
+      internalID: -1085785574
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NotebookSheet_4
+      name: NotebookIcon_Sheet_4
       rect:
         serializedVersion: 2
-        x: 1
-        y: 130
-        width: 98
-        height: 124
+        x: 0
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -215,20 +215,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4cf5ab974114257439c510cdba72285e
-      internalID: 1749178748
+      spriteID: 53c0ec1b3b0c5bf48adb426f99117b80
+      internalID: -1848928749
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NotebookSheet_5
+      name: NotebookIcon_Sheet_5
       rect:
         serializedVersion: 2
-        x: 102
-        y: 130
-        width: 98
-        height: 124
+        x: 64
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,20 +236,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5e951f882e26c7241a144c4cc4be12c9
-      internalID: 1527192386
+      spriteID: 48d67dd2153afd74d9aeb6b2088692f7
+      internalID: 838720012
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NotebookSheet_6
+      name: NotebookIcon_Sheet_6
       rect:
         serializedVersion: 2
-        x: 1
-        y: 2
-        width: 98
-        height: 124
+        x: 128
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,8 +257,113 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 218658f34f7d3e34aa528117ce812507
-      internalID: 488036304
+      spriteID: a72c61b55b4277b4381554bfcd095fc2
+      internalID: 81863460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NotebookIcon_Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 152971ddf280b404595d3fb885c541b1
+      internalID: -2072597301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NotebookIcon_Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e4d8d620eb0d1b4db9d0333fa60d74c
+      internalID: -1359043360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NotebookIcon_Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eecc8906afca3aa499a6855708dc6a3a
+      internalID: 1492926753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NotebookIcon_Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78de2635b88aa3840b1a09b4f3cc0deb
+      internalID: -1246939489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NotebookIcon_Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2eda01409298bed43aa3088a54a9f3d3
+      internalID: -1500479167
       vertices: []
       indices: 
       edges: []
@@ -266,7 +371,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 310df67802b28b541befc80153d74ad6
+    spriteID: 29c83006730b0744fb17232d5872d6a3
     internalID: 0
     vertices: []
     indices: 
@@ -274,13 +379,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      NotebookSheet_2: -866215528
-      NotebookSheet_5: 1527192386
-      NotebookSheet_1: -1708043424
-      NotebookSheet_3: 1196356499
-      NotebookSheet_4: 1749178748
-      NotebookSheet_0: 1071562719
-      NotebookSheet_6: 488036304
+      NotebookIcon_Sheet_3: -1085785574
+      NotebookIcon_Sheet_10: -1246939489
+      NotebookIcon_Sheet_8: -1359043360
+      NotebookIcon_Sheet_6: 81863460
+      NotebookIcon_Sheet_2: 1048741018
+      NotebookIcon_Sheet_5: 838720012
+      NotebookIcon_Sheet_7: -2072597301
+      NotebookIcon_Sheet_4: -1848928749
+      NotebookIcon_Sheet_1: -309753842
+      NotebookIcon_Sheet_11: -1500479167
+      NotebookIcon_Sheet_0: 1405674963
+      NotebookIcon_Sheet_9: 1492926753
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

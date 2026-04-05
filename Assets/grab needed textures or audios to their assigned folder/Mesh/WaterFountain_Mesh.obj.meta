@@ -3,7 +3,27 @@ guid: a5c2fba1a1b18b047b28ea8f736d7ea7
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WaterFountain_Mesh_0Mat
+    second: {fileID: 2100000, guid: 87599ebfa501cf244ad668d04532c554, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WaterFountain_Mesh_1Mat
+    second: {fileID: 2100000, guid: 74ec648da63a7b14dbff7f7d827d3771, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WaterFountain_Mesh_2Mat
+    second: {fileID: 2100000, guid: cb17b4743b4d59c43ad6fccd371aca33, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WaterFountain_Mesh_3Mat
+    second: {fileID: 2100000, guid: e25b6ed8c01cc2f408c637e97de994ba, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

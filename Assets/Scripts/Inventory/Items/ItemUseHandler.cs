@@ -36,6 +36,10 @@ public class ItemUseHandler : MonoBehaviour
     [Tooltip("AudioSource used by items to play sounds. Typically on the player GameObject.")]
     public AudioSource audioSource;
 
+    [BoxGroup("References")]
+    [Required]
+    [Tooltip("The InteractHandler on the player GameObject.")]
+    public InteractHandler interactHandler;
     // -------------------------------------------------------------------------
     // Private State
     // -------------------------------------------------------------------------
@@ -51,10 +55,11 @@ public class ItemUseHandler : MonoBehaviour
     {
         _ctx = new ItemUseContext
         {
-            player          = player,
+            player = player,
             playerTransform = playerTransform,
             cameraTransform = cameraTransform,
-            audioSource     = audioSource,
+            audioSource = audioSource,
+            interactHandler = interactHandler,
         };
     }
 
