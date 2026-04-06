@@ -34,8 +34,6 @@ public class PixelCursor : Singleton<PixelCursor>
     public AudioClip audHighlight;
     public AudioClip audConfirm;
 
-    // When false: pixel cursor is hidden, system mouse cursor is freed.
-    // When true:  pixel cursor is active, system mouse cursor is hidden & locked.
     [Header("Mouse Mode")]
     [Tooltip("Toggle between pixel-cursor mode and free system-mouse mode.")]
     public bool pixelCursorActive = true;
@@ -91,13 +89,10 @@ public class PixelCursor : Singleton<PixelCursor>
         _position = Vector2.zero;
         ApplyPosition();
         ApplyMouseMode();
-
-        Debug.Log($"[PixelCursor] Awake | canvas={_canvas.name}");
     }
 
     private void Update()
     {
-        // --- Free-mouse mode ---
         if (!pixelCursorActive)
         {
             if (cursorImage.enabled) cursorImage.enabled = false;
@@ -107,13 +102,9 @@ public class PixelCursor : Singleton<PixelCursor>
             return;
         }
 
-        // --- Pixel cursor active: lock & hide the OS cursor ---
-        // CursorLockMode.Locked keeps Mouse X/Y deltas working correctly
-        // while preventing the OS cursor from leaving the window.
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // --- Blink timer ---
         if (_blinkFrames > 0)
         {
             _blinkFrames--;
@@ -123,7 +114,6 @@ public class PixelCursor : Singleton<PixelCursor>
 
         if (!_hidden && !cursorImage.enabled) cursorImage.enabled = true;
 
-        // --- Speed boost (controller) ---
         _speedMultiplier = Input.GetKey(KeyCode.LeftShift) ? 4f : 1f;
 
         _mouseDelta.x = Input.GetAxisRaw("Mouse X") * 10f;
@@ -142,11 +132,9 @@ public class PixelCursor : Singleton<PixelCursor>
 
         ApplyPosition();
 
-        // --- Button interaction ---
         if (_hidden) { ClearHeldButton(); return; }
         if (graphicRaycaster == null || _eventSystem == null) { ClearHeldButton(); return; }
 
-        // Raycast from the hotspot point in canvas-local space
         Vector3 hotspotWorld = _canvasRect.TransformPoint(new Vector3(_position.x, _position.y, 0f));
         Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(
             _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _canvas.worldCamera,
@@ -166,13 +154,6 @@ public class PixelCursor : Singleton<PixelCursor>
             if (btn != null) { hoveredButton = btn; break; }
         }
 
-        if (hoveredButton != _lastHighlighted)
-        {
-            Debug.Log(hoveredButton != null
-                ? $"[PixelCursor] Hovering: {hoveredButton.gameObject.name}"
-                : "[PixelCursor] No button hovered");
-        }
-
         if (hoveredButton != null)
         {
             if (hoveredButton != _lastHighlighted)
@@ -190,7 +171,6 @@ public class PixelCursor : Singleton<PixelCursor>
                     ? hoveredButton.audConfirmOverride
                     : audConfirm);
                 _heldButton = hoveredButton;
-                Debug.Log($"[PixelCursor] Pressed: {hoveredButton.gameObject.name}");
             }
         }
         else
@@ -205,11 +185,6 @@ public class PixelCursor : Singleton<PixelCursor>
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
-    /// <summary>Enable or disable pixel-cursor mode at runtime.</summary>
     public void SetPixelCursorActive(bool active)
     {
         pixelCursorActive = active;
@@ -235,10 +210,6 @@ public class PixelCursor : Singleton<PixelCursor>
     public void SetColor(Color color) => cursorImage.color = color;
 
     public static Vector2 Movement => Instance != null ? Instance._movementThisFrame : Vector2.zero;
-
-    // -------------------------------------------------------------------------
-    // Private helpers
-    // -------------------------------------------------------------------------
 
     private void ApplyPosition()
     {
