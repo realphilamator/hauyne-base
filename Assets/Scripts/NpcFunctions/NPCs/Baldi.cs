@@ -77,6 +77,11 @@ public class Baldi : NPC
             }
         }
 
+        if (tempAnger > 0f)
+        {
+            tempAnger -= 0.02f * Time.deltaTime;
+        }
+
         if (antiHearingTime > 0f && antiHearing)
         {
             antiHearingTime -= Time.deltaTime;
@@ -172,7 +177,12 @@ public class Baldi : NPC
         {
             anger = 0.5f;
         }
-        baldiWait = -3 * anger / (anger + 2 / 0.65f) + 3f;
+        baldiWait = -3f * anger / (anger + 2f / 0.65f) + 3f;
+    }
+
+    public void AddTempAnger(float value)
+    {
+        tempAnger += value;
     }
 
     public void Hear(Vector3 source, float priority)
@@ -222,6 +232,7 @@ public class Baldi : NPC
         killerScript.canKill = false;
         currentState = BaldiState.Eating;
         canMove = false;
+        baldiAnimator.StopPlayback();
         baldiAnimator.SetTrigger("EatIdle");
         PlaySound(vfxSource, appleVoice);
         StartCoroutine(appleMunching());

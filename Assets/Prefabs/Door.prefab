@@ -202,8 +202,10 @@ MonoBehaviour:
   interactionDistance: 10
   inDoor: {fileID: 8082671911964283805}
   outDoor: {fileID: 8082671911335362848}
-  openMat: {fileID: 2100000, guid: 1a8d76d3c17ec914ca625907561af2f4, type: 2}
-  closedMat: {fileID: 2100000, guid: a5e3ae64b2ee0df4d81251b1e3e1c972, type: 2}
+  InOpenMat: {fileID: 2100000, guid: 1a8d76d3c17ec914ca625907561af2f4, type: 2}
+  InClosedMat: {fileID: 2100000, guid: a5e3ae64b2ee0df4d81251b1e3e1c972, type: 2}
+  OutOpenMat: {fileID: 2100000, guid: 1a8d76d3c17ec914ca625907561af2f4, type: 2}
+  OutClosedMat: {fileID: 2100000, guid: a5e3ae64b2ee0df4d81251b1e3e1c972, type: 2}
   openSound:
     clip: {fileID: 8300000, guid: 3567b73985827104aa9872ac51f04c16, type: 3}
     subtitleKey: Sfx_Doors_StandardOpen

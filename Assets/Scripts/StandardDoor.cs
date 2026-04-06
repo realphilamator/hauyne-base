@@ -8,7 +8,8 @@ public class StandardDoor : MonoBehaviour, IInteractable
     public float interactionDistance = 10f;
 
     [SerializeField] MeshRenderer inDoor, outDoor;
-    [SerializeField] Material openMat, closedMat;
+    [SerializeField] Material InOpenMat, InClosedMat;
+    [SerializeField] Material OutOpenMat, OutClosedMat;
 
     [System.Serializable]
     public struct DoorSound
@@ -81,8 +82,8 @@ public class StandardDoor : MonoBehaviour, IInteractable
         isOpen = true;
         inDoor.GetComponent<BoxCollider>().enabled = false;
         outDoor.GetComponent<BoxCollider>().enabled = false;
-        inDoor.material = openMat;
-        outDoor.material = openMat;
+        inDoor.material = InOpenMat;
+        outDoor.material = OutOpenMat;
         openTime = openDuration;
     }
 
@@ -92,8 +93,8 @@ public class StandardDoor : MonoBehaviour, IInteractable
         inDoor.GetComponent<BoxCollider>().enabled = true;
         outDoor.GetComponent<BoxCollider>().enabled = true;
         PlaySound(closeSound);
-        inDoor.material = closedMat;
-        outDoor.material = closedMat;
+        inDoor.material = InClosedMat;
+        outDoor.material = OutClosedMat;
     }
 
     [ContextMenu("Lock Door")]

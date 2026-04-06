@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 8308345225359565156}
   - component: {fileID: 5131469031031400250}
   - component: {fileID: 6859749054765553688}
-  - component: {fileID: 5098476260948713417}
+  - component: {fileID: 5227516714244374706}
   m_Layer: 0
   m_Name: BaldiSprite
   m_TagString: Untagged
@@ -445,7 +445,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &5098476260948713417
+--- !u!114 &5227516714244374706
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -454,9 +454,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 3991401522064795787}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52f1129024e665441b5a3285db63a8fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 10b4d3f7aaf2db6419fd5fff29eb20dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioDevice: {fileID: 9074607624404645090}
+  syncedSprites:
+  - {fileID: 21300000, guid: 9245ca14d9cfcac4281ec65a72c8a815, type: 3}
+  - {fileID: 21300000, guid: 18a9294655f6ce140b33fe2e0c483d8f, type: 3}
+  - {fileID: 21300000, guid: 7c45693ea627e9e45a7a23e9a5904c8e, type: 3}
+  - {fileID: 21300000, guid: 62b7a28c79bb0a2469c417877bc804c4, type: 3}
+  - {fileID: 21300000, guid: 03c4ded76e8fdf94f8f3c7a879a8249b, type: 3}
+  - {fileID: 21300000, guid: 64e9ace14bd60b44886e444218b4568c, type: 3}
+  - {fileID: 21300000, guid: 027e5197f6939fa4982a4f6aa3717b47, type: 3}
+  syncedAltSprites: []
+  volumeThreshold: 0.1
+  animName: 
+  useSprites: 1
+  altSprites: 0
 --- !u!1 &6988270282489634099
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +711,7 @@ MonoBehaviour:
   baldiWait: 3
   killerScript: {fileID: 8514626072854857966}
   baldiAnimator: {fileID: 6859749054765553688}
-  lipSyncAnim: {fileID: 5098476260948713417}
+  lipSyncAnim: {fileID: 5227516714244374706}
   soundLocations: []
   slapSound:
     clip: {fileID: 8300000, guid: 9aa7629f704b99e4697b191ebd8eca48, type: 3}
@@ -706,11 +720,11 @@ MonoBehaviour:
   eatSound:
     clip: {fileID: 8300000, guid: 0171078f6fe361b45b9b810d31dd85a5, type: 3}
     subtitleKey: Sfx_AppleCrunch
-    length: 1
+    length: 0.5
   crunchSound:
     clip: {fileID: 8300000, guid: dcaa8e64fa81a844b88a27f2a54efc3f, type: 3}
     subtitleKey: Sfx_Crunch
-    length: 0.6
+    length: 0.5
   yumVoice:
     clip: {fileID: 8300000, guid: 1014e9b85e8ac0a4693f9073ae0e1a35, type: 3}
     subtitleKey: Vfx_Baldi_Yum

@@ -35,6 +35,14 @@ public class PlayerController : MonoBehaviour
     // Public State
     // -------------------------------------------------------------------------
 
+    public bool inFaculty = false, inOffice = false;
+
+    public float guiltTime = 0f;
+
+    public GuiltType guiltType;
+
+    [Space(25)]
+
     /// <summary>Set to false to freeze all player movement and rotation.</summary>
     public bool canMove = true;
 
@@ -52,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>The Y position the player is locked to. Set from the initial transform position.</summary>
     private float height;
-    private float gameOverDelay = 1f;
+    private float gameOverDelay = 0.5f;
 
     private float playerSpeed;
     private float targetYaw;        // Accumulated horizontal mouse input, applied directly each frame
@@ -93,6 +101,7 @@ public class PlayerController : MonoBehaviour
         MouseMove();
         PlayerMove();
         StaminaCheck();
+        HandleGuilt();
     }
 
     private void LateUpdate()
@@ -161,6 +170,8 @@ public class PlayerController : MonoBehaviour
 
         if (cc.velocity.magnitude > 0.1f && running && stamina > 0f)
         {
+            guiltTime = 0.1f;
+            guiltType = GuiltType.Running;
             stamina -= staminaRate * Time.deltaTime;
             stamina = Mathf.Max(stamina, -5f);
         }
@@ -172,5 +183,11 @@ public class PlayerController : MonoBehaviour
 
         if (staminaBar != null)
             staminaBar.value = stamina / maxStamina * 100f;
+    }
+
+    void HandleGuilt()
+    {
+        if (guiltTime > 0f)
+            guiltTime -= Time.deltaTime;
     }
 }
