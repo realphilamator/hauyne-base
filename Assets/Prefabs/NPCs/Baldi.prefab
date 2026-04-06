@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 8308345225359565156}
   - component: {fileID: 5131469031031400250}
   - component: {fileID: 6859749054765553688}
+  - component: {fileID: 5098476260948713417}
   m_Layer: 0
   m_Name: BaldiSprite
   m_TagString: Untagged
@@ -297,6 +298,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &5098476260948713417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3991401522064795787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52f1129024e665441b5a3285db63a8fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6988270282489634099
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +469,7 @@ GameObject:
   - component: {fileID: 7332980113175657052}
   - component: {fileID: -6875322209322650155}
   - component: {fileID: 8514626072854857966}
+  - component: {fileID: 572562492773619641}
   m_Layer: 0
   m_Name: Baldi
   m_TagString: NPC
@@ -493,7 +507,7 @@ CapsuleCollider:
   m_Radius: 1.5
   m_Height: 7
   m_Direction: 1
-  m_Center: {x: 0, y: 5, z: 0}
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!195 &7332980113175657052
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -534,18 +548,24 @@ MonoBehaviour:
   antiHearing: 0
   baseTime: 3
   baldiWait: 3
+  killerScript: {fileID: 8514626072854857966}
   baldiAnimator: {fileID: 6859749054765553688}
+  lipSyncAnim: {fileID: 5098476260948713417}
+  soundLocations: []
   slapSound:
     clip: {fileID: 8300000, guid: 9aa7629f704b99e4697b191ebd8eca48, type: 3}
     subtitleKey: Sfx_Baldi_Slap
   eatSound:
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 0171078f6fe361b45b9b810d31dd85a5, type: 3}
+    subtitleKey: Sfx_AppleCrunch
+  crunchSound:
+    clip: {fileID: 8300000, guid: dcaa8e64fa81a844b88a27f2a54efc3f, type: 3}
     subtitleKey: Sfx_Crunch
   yumVoice:
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 1014e9b85e8ac0a4693f9073ae0e1a35, type: 3}
     subtitleKey: Vfx_Baldi_Yum
   appleVoice:
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 8b20327d39b3e2f4f9f4906192b1b63b, type: 3}
     subtitleKey: Vfx_Baldi_Apple
   sfxSource: {fileID: 993354755003731741}
   vfxSource: {fileID: 7566690800949477866}
@@ -564,3 +584,19 @@ MonoBehaviour:
   canKill: 1
   killHeight: 3
   sfxSource: {fileID: 993354755003731741}
+--- !u!54 &572562492773619641
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7332980113175657053}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
