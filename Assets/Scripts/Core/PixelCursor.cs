@@ -14,6 +14,9 @@ public class PixelCursor : Singleton<PixelCursor>
     public float cursorSizePx = 16f;
     public Vector2 hotspot = Vector2.zero;
 
+    [Header("Sensitivity")]
+    public float controllerSensitivity = 200f;
+
     [Header("Reference Resolution")]
     public float referenceWidth = 480f;
     public float referenceHeight = 360f;
@@ -31,6 +34,12 @@ public class PixelCursor : Singleton<PixelCursor>
     public AudioClip audHighlight;
     public AudioClip audConfirm;
 
+    // When false: pixel cursor is hidden, system mouse cursor is freed.
+    // When true:  pixel cursor is active, system mouse cursor is hidden.
+    [Header("Mouse Mode")]
+    [Tooltip("Toggle between pixel-cursor mode and free system-mouse mode.")]
+    public bool pixelCursorActive = true;
+
     public Vector2 Position => _position;
 
     private RectTransform _rt;
@@ -44,8 +53,16 @@ public class PixelCursor : Singleton<PixelCursor>
     private Vector3 _localPosition;
     private bool _hidden;
     private int _blinkFrames;
+    private float _speedMultiplier = 1f;
     private StandardButton _heldButton;
     private StandardButton _lastHighlighted;
+
+    // Raw mouse delta this frame (screen pixels)
+    private Vector2 _mouseDelta;
+    // Controller analog input this frame
+    private Vector2 _analogInput;
+    // Combined movement applied this frame
+    private Vector2 _movementThisFrame;
 
     protected override void OnAwake()
     {
@@ -74,11 +91,29 @@ public class PixelCursor : Singleton<PixelCursor>
         _position = Vector2.zero;
         ApplyPosition();
 
+        ApplyMouseMode();
+
         Debug.Log($"[PixelCursor] Awake | canvas={_canvas.name}");
     }
 
     private void Update()
     {
+        // --- Mouse mode toggle (example: press M to switch; wire however you like) ---
+        // Remove or replace this block if you drive pixelCursorActive from elsewhere.
+        // if (Input.GetKeyDown(KeyCode.M))
+        //     SetPixelCursorActive(!pixelCursorActive);
+
+        if (!pixelCursorActive)
+        {
+            // Free-mouse mode: hide pixel cursor, restore system cursor.
+            if (cursorImage.enabled) cursorImage.enabled = false;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            ClearHeldButton();
+            return;
+        }
+
+        // --- Blink timer ---
         if (_blinkFrames > 0)
         {
             _blinkFrames--;
@@ -86,6 +121,7 @@ public class PixelCursor : Singleton<PixelCursor>
                 SetHidden(false);
         }
 
+        // --- Cursor lock guard ---
         if (Cursor.lockState == CursorLockMode.Locked)
         {
             if (cursorImage.enabled) cursorImage.enabled = false;
@@ -94,25 +130,43 @@ public class PixelCursor : Singleton<PixelCursor>
 
         if (!_hidden && !cursorImage.enabled) cursorImage.enabled = true;
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _canvasRect,
-            Input.mousePosition,
-            _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _canvas.worldCamera,
-            out Vector2 localPoint
-        );
+        // --- Speed boost (controller) ---
+        // Wire to your InputManager if available; plain keyboard fallback shown here.
+        _speedMultiplier = Input.GetKey(KeyCode.LeftShift) ? 4f : 1f;
 
-        _position.x = Mathf.Clamp(Mathf.Round(localPoint.x), minRange.x, maxRange.x);
-        _position.y = Mathf.Clamp(Mathf.Round(localPoint.y), minRange.y, maxRange.y);
+        // --- Delta-based movement (does NOT copy mouse position) ---
+        _mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+        _analogInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        float mouseSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("MouseSensitivity", 3f), 0.1f, 10f);
+
+        _movementThisFrame.x = _mouseDelta.x * mouseSensitivity
+                             + _analogInput.x * Time.unscaledDeltaTime * controllerSensitivity * _speedMultiplier;
+        _movementThisFrame.y = _mouseDelta.y * mouseSensitivity
+                             + _analogInput.y * Time.unscaledDeltaTime * controllerSensitivity * _speedMultiplier;
+
+        _position.x = Mathf.Clamp(_position.x + _movementThisFrame.x, minRange.x, maxRange.x);
+        _position.y = Mathf.Clamp(_position.y + _movementThisFrame.y, minRange.y, maxRange.y);
 
         ApplyPosition();
 
+        // --- Button interaction ---
         if (_hidden) { ClearHeldButton(); return; }
         if (graphicRaycaster == null || _eventSystem == null) { ClearHeldButton(); return; }
 
+        // Build a pointer event from the hotspot world position so raycasting
+        // originates from the tip of the cursor, not the sprite corner.
+        // _position is in canvas-local space; convert to world then to screen.
+        Vector3 hotspotWorld = _canvasRect.TransformPoint(new Vector3(_position.x, _position.y, 0f));
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(
+            _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _canvas.worldCamera,
+            hotspotWorld
+        );
+
         _pointerEventData = new PointerEventData(_eventSystem);
-        _pointerEventData.position = Input.mousePosition;
-        _pointerEventData.pressPosition = Input.mousePosition;
+        _pointerEventData.position = screenPos;
 
         _raycastResults.Clear();
         graphicRaycaster.Raycast(_pointerEventData, _raycastResults);
@@ -163,6 +217,17 @@ public class PixelCursor : Singleton<PixelCursor>
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
+
+    /// <summary>Enable or disable pixel-cursor mode at runtime.</summary>
+    public void SetPixelCursorActive(bool active)
+    {
+        pixelCursorActive = active;
+        ApplyMouseMode();
+    }
+
     public void Hide(bool hide) => SetHidden(hide);
 
     public void Blink(int frames)
@@ -181,11 +246,27 @@ public class PixelCursor : Singleton<PixelCursor>
     public void SetSprite(Sprite sprite) => cursorImage.sprite = sprite;
     public void SetColor(Color color) => cursorImage.color = color;
 
+    public static Vector2 Movement => Instance != null ? Instance._movementThisFrame : Vector2.zero;
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
     private void ApplyPosition()
     {
-        _localPosition.x = _position.x - hotspot.x;
-        _localPosition.y = _position.y + hotspot.y;
+        _localPosition.x = Mathf.Round(_position.x) - hotspot.x;
+        _localPosition.y = Mathf.Round(_position.y) + hotspot.y;
         _rt.anchoredPosition = _localPosition;
+    }
+
+    private void ApplyMouseMode()
+    {
+        if (!pixelCursorActive)
+        {
+            cursorImage.enabled = false;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     private void SetHidden(bool hide)

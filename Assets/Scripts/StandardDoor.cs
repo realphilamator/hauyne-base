@@ -34,12 +34,19 @@ public class StandardDoor : MonoBehaviour, IInteractable
 
     public bool CanInteract(GameObject interactor)
     {
-        return !isLocked;
+        return true;
     }
 
     public void Interact(GameObject interactor)
     {
-        OpenDoor();
+        if (!isLocked)
+        {
+            OpenDoor();
+        }
+        else
+        {
+            PlaySound(lockedSound);
+        }
     }
 
     private void Start()
