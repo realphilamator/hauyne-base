@@ -22,9 +22,13 @@ public class Baldi : NPC
 
     public BaldiState currentState = BaldiState.Wandering;
     public bool antiHearing = false;
-    bool wheredYouGo = false, canMove = true;
-    float timeToMove = 0f, storedSpeed = 0f, moveFrames = 0f, tempAnger = 0f, anger = 0f, loseTimer = 0f, antiHearingTime = 30f, currentPriority = 0f;
+    bool wheredYouGo = false, canMove = true, endless = false;
+    float timeToMove = 0f, storedSpeed = 0f, moveFrames = 0f, tempAnger = 0f, anger = 0f, loseTimer = 0f, antiHearingTime = 30f, currentPriority = 0f, timeToAnger = 0f;
     [SerializeField] float baseTime = 3f, baldiWait = 3f;
+    [Header("Endless")]
+    [SerializeField] float angerRate = 0.01f;
+    [SerializeField] float angerRateRate = 0.00025f;
+    [SerializeField] float angerFrequency = 1f;
     [SerializeField] KillerScript killerScript;
 
     [Space(15)]
@@ -62,6 +66,10 @@ public class Baldi : NPC
         storedSpeed = agent.speed;
         agent.speed = 0f;
         currentState = BaldiState.Wandering;
+
+        GameController gc = FindObjectOfType<GameController>();
+        if (gc != null)
+            endless = gc.endlessMode;
     }
 
     void Update()
@@ -89,6 +97,20 @@ public class Baldi : NPC
             {
                 antiHearing = false;
                 antiHearingTime = 30f;
+            }
+        }
+
+        if (endless)
+        {
+            if (timeToAnger > 0f)
+            {
+                timeToAnger -= Time.deltaTime;
+                if (timeToAnger <= 0f)
+                {
+                    timeToAnger = angerFrequency;
+                    AddAnger(angerRate);
+                    angerRate += angerRateRate;
+                }
             }
         }
 

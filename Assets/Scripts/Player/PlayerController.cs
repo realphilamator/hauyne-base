@@ -41,7 +41,9 @@ public class PlayerController : MonoBehaviour
 
     public GuiltType guiltType;
 
-    [Space(25)]
+    [Space(20)]
+
+    public bool jumpRope = false;
 
     /// <summary>Set to false to freeze all player movement and rotation.</summary>
     public bool canMove = true;

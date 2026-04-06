@@ -47,6 +47,11 @@ public class CameraScript : MonoBehaviour
         if (ps.gameOver)
             return;
 
+        if (ps.jumpRope)
+        {
+
+        }
+
         // Snap to look behind while the action key is held, return forward when released
         lookBehind = Singleton<InputManager>.Instance.GetActionKey(InputAction.LookBehind) ? 180 : 0;
     }

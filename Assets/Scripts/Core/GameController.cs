@@ -32,6 +32,10 @@ public class GameController : MonoBehaviour
     {
         _notebookCount += 1;
         UpdateCounter();
+        foreach (Baldi baldi in FindObjectsOfType<Baldi>(false))
+        {
+            baldi.AddAnger(1f);
+        }
         if (notebookAnimator != null)
         {
             notebookAnimator.Play("NotebookSpin", -1, 0f);
