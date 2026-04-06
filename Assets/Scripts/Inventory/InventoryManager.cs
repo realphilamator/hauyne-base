@@ -3,114 +3,50 @@ using UnityEngine.UI;
 using TMPro;
 using NaughtyAttributes;
 
-/// <summary>
-/// Manages the player's item inventory. Handles slot selection, item collection,
-/// item use, and inventory UI updates.
-///
-/// Setup:
-///   1. Attach this to your HUD or Player GameObject.
-///   2. Assign all Inspector references.
-///   3. Set slotCount (3 default, 9 max).
-///   4. Assign the three slot prefabs (start, middle, end) and the Slots container.
-///      Place 3 prefab instances inside Slots at edit time for a correct edit-time preview.
-///      BuildSlotUI() always rebuilds from scratch at runtime to ensure correct slot order.
-///
-/// Slot hotkeys are handled here directly (Alpha1-Alpha9) since they are
-/// fixed UI shortcuts, not rebindable gameplay actions.
-/// </summary>
 public class InventoryManager : Singleton<InventoryManager>
 {
-    // -------------------------------------------------------------------------
-    // Inspector Fields
-    // -------------------------------------------------------------------------
-
     [BoxGroup("References")]
-    [Required]
-    [Tooltip("The ItemUseHandler component responsible for executing item logic.")]
     public ItemUseHandler itemUseHandler;
 
     [BoxGroup("References")]
-    [Required]
-    [Tooltip("The ItemRegistry asset containing all item definitions.")]
     public ItemRegistry itemRegistry;
 
-    // -------------------------------------------------------------------------
-    // UI
-    // -------------------------------------------------------------------------
-
     [BoxGroup("UI")]
-    [Required]
-    [Tooltip("Prefab for the leftmost slot.")]
     public GameObject startPrefab;
 
     [BoxGroup("UI")]
-    [Required]
-    [Tooltip("Prefab repeated for every middle slot.")]
     public GameObject middlePrefab;
 
     [BoxGroup("UI")]
-    [Required]
-    [Tooltip("Prefab for the rightmost slot.")]
     public GameObject endPrefab;
 
     [BoxGroup("UI")]
-    [Required]
-    [Tooltip("Parent RectTransform that slot GameObjects are spawned into. " +
-             "Use a Horizontal Layout Group for automatic spacing.")]
     public RectTransform inventoryTransform;
 
     [BoxGroup("UI")]
-    [Tooltip("Tint applied to SlotImg on all unselected slots.")]
     public Color inventoryColor = Color.white;
 
     [BoxGroup("UI")]
-    [Tooltip("Tint applied to SlotImg on the selected slot.")]
     public Color selectionColor = Color.red;
 
     [BoxGroup("UI")]
-    [Tooltip("Text element that displays the selected item's name.")]
     public TMP_Text inventoryText;
-
-    // -------------------------------------------------------------------------
-    // Settings
-    // -------------------------------------------------------------------------
 
     [BoxGroup("Settings")]
     [Range(3, 9)]
-    [Tooltip("Number of active inventory slots. Default is 3, maximum is 9.")]
     public int slotCount = 3;
 
     [BoxGroup("Settings")]
-    [Tooltip("Sprite shown in a slot when it is empty.")]
     public Sprite nothingSprite;
 
-    // -------------------------------------------------------------------------
-    // Runtime State
-    // -------------------------------------------------------------------------
+    [BoxGroup("Debug")]
+    [ReadOnly] public int selectedSlot = 0;
 
     [BoxGroup("Debug")]
-    [ReadOnly]
-    [Tooltip("The currently selected slot index.")]
-    public int selectedSlot = 0;
+    [ReadOnly] public BaseItem[] items;
 
-    [BoxGroup("Debug")]
-    [ReadOnly]
-    [Tooltip("The item currently in each slot. Null means the slot is empty.")]
-    public BaseItem[] items;
-
-    // -------------------------------------------------------------------------
-    // Private State
-    // -------------------------------------------------------------------------
-
-    /// <summary>SlotImg Image components, used for selection highlight.</summary>
     private Image[] _slotBackgrounds;
-
-    /// <summary>ItemImg Image components, used for item icon display.</summary>
     private Image[] _slotIcons;
-
-    // -------------------------------------------------------------------------
-    // Unity Messages
-    // -------------------------------------------------------------------------
 
     protected override void Awake()
     {
@@ -131,14 +67,26 @@ public class InventoryManager : Singleton<InventoryManager>
         HandleHotkeys();
     }
 
-    // -------------------------------------------------------------------------
-    // Slot UI Construction
-    // -------------------------------------------------------------------------
+    public BaseItem GetSelectedItem()
+    {
+        if (selectedSlot < 0 || selectedSlot >= slotCount)
+            return null;
 
-    /// <summary>
-    /// Destroys all existing slot children and rebuilds from scratch to ensure
-    /// start, middle, and end prefabs are always in the correct order.
-    /// </summary>
+        return items[selectedSlot];
+    }
+
+    public bool HeldItemIs<T>(out int slot) where T : BaseItem
+    {
+        slot = selectedSlot;
+
+        BaseItem item = GetSelectedItem();
+        if (item == null) return false;
+
+        return item is T;
+    }
+
+    // =========================
+
     private void BuildSlotUI()
     {
         for (int i = inventoryTransform.childCount - 1; i >= 0; i--)
@@ -164,7 +112,6 @@ public class InventoryManager : Singleton<InventoryManager>
         UpdateSelectionHighlight();
     }
 
-    /// <summary>Returns the correct prefab for a slot at the given index.</summary>
     private GameObject GetPrefabForSlot(int index)
     {
         if (slotCount <= 1) return startPrefab;
@@ -172,10 +119,6 @@ public class InventoryManager : Singleton<InventoryManager>
         if (index == slotCount - 1) return endPrefab;
         return middlePrefab;
     }
-
-    // -------------------------------------------------------------------------
-    // Input
-    // -------------------------------------------------------------------------
 
     private void HandleScrollWheel()
     {
@@ -197,13 +140,6 @@ public class InventoryManager : Singleton<InventoryManager>
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
-    /// <summary>
-    /// Selects the given slot, updates the UI highlight and item name.
-    /// </summary>
     public void SelectSlot(int index)
     {
         if (index < 0 || index >= slotCount) return;
@@ -213,11 +149,6 @@ public class InventoryManager : Singleton<InventoryManager>
         UpdateSelectionHighlight();
     }
 
-    /// <summary>
-    /// Adds an item to the first empty slot. If all slots are full,
-    /// the item replaces the currently selected slot.
-    /// Returns the slot index the item was placed in, or -1 on failure.
-    /// </summary>
     public int CollectItem(BaseItem item)
     {
         if (item == null) return -1;
@@ -238,18 +169,12 @@ public class InventoryManager : Singleton<InventoryManager>
         return targetSlot;
     }
 
-    /// <summary>
-    /// Uses the item in the currently selected slot.
-    /// If the item is consumed it is removed from the slot.
-    /// Does nothing if the selected slot is empty.
-    /// </summary>
     public void UseSelectedItem()
     {
         if (items[selectedSlot] == null) return;
         itemUseHandler.Execute(items[selectedSlot], () => ClearSlot(selectedSlot));
     }
 
-    /// <summary>Removes the item from a specific slot and updates the UI.</summary>
     public void ClearSlot(int index)
     {
         if (index < 0 || index >= slotCount) return;
@@ -259,17 +184,11 @@ public class InventoryManager : Singleton<InventoryManager>
         UpdateItemNameUI();
     }
 
-    /// <summary>Clears all slots. Useful for game over or scene transitions.</summary>
-    [Button("Clear All Slots")]
     public void ClearAllSlots()
     {
         for (int i = 0; i < slotCount; i++)
             ClearSlot(i);
     }
-
-    // -------------------------------------------------------------------------
-    // UI Helpers
-    // -------------------------------------------------------------------------
 
     private void RefreshSlotUI(int index)
     {
@@ -293,10 +212,6 @@ public class InventoryManager : Singleton<InventoryManager>
         inventoryText.text = items[selectedSlot] != null ? items[selectedSlot].itemName : "Nothing";
     }
 
-    /// <summary>
-    /// Tints SlotImg on the selected slot with selectionColor,
-    /// and all others with inventoryColor.
-    /// </summary>
     private void UpdateSelectionHighlight()
     {
         if (_slotBackgrounds == null) return;

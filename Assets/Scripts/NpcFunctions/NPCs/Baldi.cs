@@ -302,10 +302,15 @@ public class Baldi : NPC
         if (other.CompareTag("Player") && killerScript.canKill)
         {
             CameraScript cam = player.GetComponentInChildren<CameraScript>();
-            if (true)
+            InventoryManager inv = InventoryManager.Instance;
+
+            if (inv.HeldItemIs<AppleItem>(out int slot))
             {
-                // Placeholder for Apple here
+                inv.ClearSlot(slot);
+                AppleMuncher();
+                return;
             }
+
             cam.killer = killerScript;
             player.gameOver = true;
             killerScript.PlayKillSound();
