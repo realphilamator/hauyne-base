@@ -29,24 +29,16 @@ public class StandardDoor : MonoBehaviour, IInteractable
     bool isLocked = false;
     float lockTime = 0f;
 
-    // IInteractable
     public float InteractionDistance => interactionDistance;
 
-    public bool CanInteract(GameObject interactor)
-    {
-        return true;
-    }
+    public bool CanInteract(GameObject interactor) => true;
 
     public void Interact(GameObject interactor)
     {
         if (!isLocked)
-        {
             OpenDoor();
-        }
         else
-        {
             PlaySound(lockedSound);
-        }
     }
 
     private void Start()
@@ -69,24 +61,6 @@ public class StandardDoor : MonoBehaviour, IInteractable
             if (openTime <= 0f)
                 CloseDoor();
         }
-<<<<<<< Updated upstream
-=======
-        Interact();
-    }
-
-    void Interact()
-    {
-        if (isLocked)
-            return;
-
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f)); // RAYCAST IS PLACEHOLDER TOO BLAH BLAH BLAH
-        Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance) && Input.GetMouseButtonDown(0) && Time.timeScale != 0f) // this interaction method is placeholder
-        {
-            if (hit.collider.gameObject == gameObject && Vector3.Distance(player.position, transform.position) <= interactionDistance)
-                OpenDoor();
-        }
->>>>>>> Stashed changes
     }
 
     void OpenDoor()

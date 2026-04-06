@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
-using NaughtyAttributes;
 
 public class GameController : MonoBehaviour
 {
