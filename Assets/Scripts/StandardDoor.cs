@@ -63,12 +63,19 @@ public class StandardDoor : MonoBehaviour, IInteractable
         }
     }
 
-    void OpenDoor()
+    void OpenDoor(bool isNpc = false) // "isNpc" exists to prevent baldi from hearing the doors he opens.
     {
         if (locked)
         {
             PlaySound(lockedSound);
             return;
+        }
+        if (!isOpen && !isNpc)
+        {
+            foreach (Baldi bald in FindObjectsOfType<Baldi>())
+            {
+                bald.Hear(transform.position, 10f);
+            }
         }
         if (!isOpen) PlaySound(openSound);
         isOpen = true;
@@ -116,13 +123,13 @@ public class StandardDoor : MonoBehaviour, IInteractable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("NPC") && !isOpen && !isLocked)
-            OpenDoor();
+        if (other.gameObject.CompareTag("NPC") && !isOpen && !isLocked)
+            OpenDoor(true);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if ((other.CompareTag("Player") || other.CompareTag("NPC")) && isOpen)
+        if ((other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("NPC")) && isOpen)
             openTime = openDuration;
     }
 }

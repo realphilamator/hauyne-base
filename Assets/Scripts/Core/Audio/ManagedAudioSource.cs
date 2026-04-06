@@ -44,6 +44,13 @@ public class ManagedAudioSource : MonoBehaviour
         if (!string.IsNullOrEmpty(keyToUse) && SubtitleManager.Instance != null)
             SubtitleManager.Instance.SpawnSubtitle(this, transform, keyToUse, durationOverride);
     }
+    public void PlayOneShot(AudioClip clip, string subtitleKeyOverride = null, float durationOverride = -1f)
+    {
+        audioSource.PlayOneShot(clip);
+        string keyToUse = subtitleKeyOverride ?? subtitleKey;
+        if (!string.IsNullOrEmpty(keyToUse) && SubtitleManager.Instance != null)
+            SubtitleManager.Instance.SpawnSubtitle(this, transform, keyToUse, durationOverride);
+    }
     public void SetClipAndPlay(AudioClip clip, string subtitleKeyOverride = null, float durationOverride = -1f)
     {
         audioSource.clip = clip;

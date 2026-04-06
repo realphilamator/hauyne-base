@@ -61,13 +61,20 @@ public class SwingDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("NPC") || other.CompareTag("Player") && !isOpen && !isLocked)
+        if ((other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("NPC")) && !isOpen && !isLocked)
             OpenDoor();
+        if (other.gameObject.CompareTag("Player") && !isOpen && !isLocked)
+        {
+            foreach (Baldi bald in FindObjectsOfType<Baldi>())
+            {
+                bald.Hear(transform.position, 10f);
+            }
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") || other.CompareTag("NPC") && isOpen && !isLocked)
+        if ((other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("NPC")) && isOpen && !isLocked)
             openTime = openDuration;
     }
 
