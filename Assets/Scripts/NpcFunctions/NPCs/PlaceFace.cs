@@ -15,10 +15,7 @@ public class PlaceFace : NPC
 
     private void Update()
     {
-        if (coolDown > 0f)
-        {
-            coolDown -= Time.deltaTime;
-        }
+        coolDown = Mathf.Max(0f, coolDown - Time.deltaTime);
 
         if (goneCrazyTimer > 0f)
         {
