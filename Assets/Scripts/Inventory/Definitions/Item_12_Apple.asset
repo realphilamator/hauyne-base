@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7c94d289704acd459dc31ad0a83da1e, type: 3}
   m_Name: Item_12_Apple
   m_EditorClassIdentifier: 
-  itemName: New Item
-  icon: {fileID: 0}
-  pickupName: 
+  itemName: Apple For Baldi
+  icon: {fileID: 21300000, guid: 218949627754cce439114d0854fd373f, type: 3}
+  pickupName: Pickup_Apple
   addToInventory: 1
   stayOnPickup: 0

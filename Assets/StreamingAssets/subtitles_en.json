@@ -35,6 +35,42 @@
         {
             "key": "Vfx_Baldi_Apple",
             "value": "An Apple? For me? Thanks!"
+        },
+        {
+            "key": "Vfx_Baldi_Praise1",
+            "value": "Aha! You got it!"
+        },
+        {
+            "key": "Vfx_Baldi_Praise2",
+            "value": "Great job! That's right!"
+        },
+        {
+            "key": "Vfx_Baldi_Praise3",
+            "value": "Good one!"
+        },
+        {
+            "key": "Vfx_Baldi_Praise4",
+            "value": "You're doing fantastic!"
+        },
+        {
+            "key": "Vfx_Baldi_Praise5",
+            "value": "I can't believe it! You're incredible!"
+        },
+        {
+            "key": "Vfx_Baldi_Praise6",
+            "value": "Woah, I think you might be smarter than me!"
+        },
+        {
+            "key": "Sfx_AppleCrunch",
+            "value": "*CRONCH*"
+        },
+        {
+            "key": "Sfx_Crunch",
+            "value": "*CRUNCH*"
+        },
+        {
+            "key": "Vfx_Baldi_Yum",
+            "value": "Yum!"
         }
     ]
 }

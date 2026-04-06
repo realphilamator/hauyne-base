@@ -7,6 +7,12 @@ public class SubtitleManager : Singleton<SubtitleManager>
     public bool subtitlesEnabled = true;
     private List<SubtitleController> active = new List<SubtitleController>();
     private Dictionary<ManagedAudioSource, SubtitleController> sourceMap = new Dictionary<ManagedAudioSource, SubtitleController>();
+
+    protected override void Awake()
+    {
+        subtitlesEnabled = PlayerPrefs.GetInt("Captions", 0) == 1;
+    }
+
     public static new SubtitleManager Instance
     {
         get
