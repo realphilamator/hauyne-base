@@ -50,7 +50,6 @@ public class Baldi : NPC
 
     [SerializeField] ManagedAudioSource sfxSource;
     [SerializeField] ManagedAudioSource vfxSource;
-    AudioSource sfxAudio, vfxAudio;
 
     protected override void Awake()
     {
@@ -63,9 +62,6 @@ public class Baldi : NPC
         storedSpeed = agent.speed;
         agent.speed = 0f;
         currentState = BaldiState.Wandering;
-
-        sfxAudio = sfxSource.GetComponent<AudioSource>();
-        vfxAudio = vfxSource.GetComponent<AudioSource>();
     }
 
     void Update()
@@ -166,7 +162,7 @@ public class Baldi : NPC
         timeToMove = baldiWait - tempAnger;
         moveFrames = 10f;
         baldiAnimator.SetTrigger("Slap");
-        PlaySound(sfxAudio, sfxSource, slapSound);
+        PlaySound(sfxSource, slapSound);
     }
 
     public void AddAnger(float value)
@@ -227,7 +223,7 @@ public class Baldi : NPC
         currentState = BaldiState.Eating;
         canMove = false;
         baldiAnimator.SetTrigger("EatIdle");
-        PlaySound(vfxAudio, vfxSource, appleVoice);
+        PlaySound(vfxSource, appleVoice);
         StartCoroutine(appleMunching());
     }
 
@@ -276,7 +272,7 @@ public class Baldi : NPC
         canMove = false;
         currentState = BaldiState.Praise;
         killerScript.canKill = false;
-        PlaySound(vfxAudio, vfxSource, selectedPraise);
+        PlaySound(vfxSource, selectedPraise);
         StartCoroutine(PraiseCoroutine(selectedPraise.clip.length));
     }
 
@@ -293,12 +289,26 @@ public class Baldi : NPC
         yield break;
     }
 
-    void PlaySound(AudioSource source, ManagedAudioSource mas, BaldiAudio sound)
+    void PlaySound(ManagedAudioSource mas, BaldiAudio sound)
     {
-        if (source == null || mas == null)
+        if (mas == null)
             return;
-        if (sound.clip != null)
-            source.clip = sound.clip;
-        mas.Play(sound.subtitleKey, sound.length);
+
+        mas.SetClipAndPlay(sound.clip, sound.subtitleKey, sound.length);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && killerScript.canKill)
+        {
+            CameraScript cam = player.GetComponentInChildren<CameraScript>();
+            if (true)
+            {
+                // Placeholder for Apple here
+            }
+            cam.killer = killerScript;
+            player.gameOver = true;
+            killerScript.PlayKillSound();
+        }
     }
 }

@@ -6056,10 +6056,12 @@ MonoBehaviour:
   maxStamina: 100
   staminaRate: 10
   staminaBar: {fileID: 1913222748}
-  mouseSensitivity: 3
+  camSensitivity: 5
   cc: {fileID: 888529363}
   canMove: 1
   stamina: 100
+  gameOver: 0
+  blackSky: {fileID: 2100000, guid: 63ce9dc7285b40a478a46da965bd37da, type: 2}
 --- !u!143 &888529363
 CharacterController:
   m_ObjectHideFlags: 0

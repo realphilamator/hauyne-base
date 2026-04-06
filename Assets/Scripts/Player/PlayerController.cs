@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -40,17 +41,24 @@ public class PlayerController : MonoBehaviour
     /// <summary>Current stamina value. Read by other scripts (e.g. CameraScript) to check run state.</summary>
     public float stamina;
 
+    /// <summary>Set to true when the player has been caught by a Killer. Freezes movement and triggers game over logic.</summary>
+    public bool gameOver = false;
+
+    [SerializeField] private Material blackSky;
+
     // -------------------------------------------------------------------------
     // Private State
     // -------------------------------------------------------------------------
 
     /// <summary>The Y position the player is locked to. Set from the initial transform position.</summary>
     private float height;
+    private float gameOverDelay = 1f;
 
     private float playerSpeed;
     private float targetYaw;        // Accumulated horizontal mouse input, applied directly each frame
     private Quaternion playerRotation;
     private Vector3 moveDirection;
+    private Camera playerCamera;
 
     private InputManager input;
 
@@ -70,6 +78,7 @@ public class PlayerController : MonoBehaviour
         targetYaw = transform.eulerAngles.y;
 
         camSensitivity = PlayerPrefs.GetFloat("CameraSensitivity", 4f);
+        playerCamera = GetComponentInChildren<Camera>();
 
         if (cc == null)
             cc = GetComponent<CharacterController>();
@@ -84,6 +93,24 @@ public class PlayerController : MonoBehaviour
         MouseMove();
         PlayerMove();
         StaminaCheck();
+    }
+
+    private void LateUpdate()
+    {
+        if (gameOver)
+        {
+            Time.timeScale = 0f;
+            RenderSettings.skybox = blackSky;
+            canMove = false;
+            gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
+            playerCamera.farClipPlane = gameOverDelay * 400f;
+
+            if (gameOverDelay <= 0f)
+            {
+                SceneManager.LoadScene("MainMenu");
+                Time.timeScale = 1f;
+            }
+        }
     }
 
     // -------------------------------------------------------------------------

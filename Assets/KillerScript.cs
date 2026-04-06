@@ -4,10 +4,11 @@ using static Baldi;
 public class KillerScript : MonoBehaviour
 {
     public bool canKill = true;
-    [SerializeField] float killHeight = 3f;
+    public float killHeight = 3f;
     [SerializeField] KillSound[] killSounds;
     [SerializeField] ManagedAudioSource sfxSource;
 
+    [System.Serializable]
     public struct KillSound
     {
         public AudioClip clip;
@@ -25,8 +26,7 @@ public class KillerScript : MonoBehaviour
     {
         if (source == null || mas == null)
             return;
-        if (sound.clip != null)
-            source.clip = sound.clip;
-        mas.Play(sound.subtitleKey);
+
+        mas.SetClipAndPlay(sound.clip, sound.subtitleKey, sound.clip.length);
     }
 }

@@ -33,12 +33,20 @@ public class CameraScript : MonoBehaviour
     /// </summary>
     private int lookBehind;
 
+    /// <summary>
+    /// Reference to the killer, used for positioning the camera during game over.
+    /// </summary>
+    public KillerScript killer;
+
     // -------------------------------------------------------------------------
     // Unity Messages
     // -------------------------------------------------------------------------
 
     private void Update()
     {
+        if (ps.gameOver)
+            return;
+
         // Snap to look behind while the action key is held, return forward when released
         lookBehind = Singleton<InputManager>.Instance.GetActionKey(InputAction.LookBehind) ? 180 : 0;
     }
@@ -47,6 +55,14 @@ public class CameraScript : MonoBehaviour
     {
         // Apply look-behind on top of the player's current rotation.
         // LateUpdate ensures this runs after PlayerController has updated the player's rotation.
-        transform.rotation = player.transform.rotation * Quaternion.Euler(0f, (float)lookBehind, 0f);
+        if (ps.gameOver)
+        {
+            transform.position = killer.transform.position + killer.transform.forward * -2f + new Vector3(0f, killer.killHeight, 0f);//Puts the camera in front of Baldi
+            transform.LookAt(new Vector3(killer.transform.position.x, killer.transform.position.y + killer.killHeight, killer.transform.position.z));//Makes the player look at baldi with an offset so the camera doesn't look at the feet
+        }
+        else
+        {
+            transform.rotation = player.transform.rotation * Quaternion.Euler(0f, (float)lookBehind, 0f);
+        }
     }
 }
