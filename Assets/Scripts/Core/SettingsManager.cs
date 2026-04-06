@@ -35,6 +35,7 @@ public class SettingsManager : MonoBehaviour
     public SegmentedBar sfxBar;
     public SegmentedBar voiceBar;
     public SegmentedBar mouseBar;
+    public SegmentedBar camBar;
 
     [Header("Graphics UI")]
     public TextMeshProUGUI resolutionLabel;
@@ -50,6 +51,7 @@ public class SettingsManager : MonoBehaviour
     private const string k_SFX = "SFXVolume";
     private const string k_Voice = "VoiceVolume";
     private const string k_Mouse = "MouseSensitivity";
+    private const string k_Cam = "CameraSensitivity";
     private const string k_Captions = "Captions";
     private const string k_Fullscreen = "Fullscreen";
     private const string k_Vsync = "Vsync";
@@ -168,8 +170,13 @@ public class SettingsManager : MonoBehaviour
         }
         if (mouseBar != null)
         {
-            float saved = PlayerPrefs.GetFloat(k_Mouse, 3f);
+            float saved = PlayerPrefs.GetFloat(k_Mouse, 5f);
             mouseBar.Value = saved;
+        }
+        if (camBar != null)
+        {
+            float saved = PlayerPrefs.GetFloat(k_Cam, 4f);
+            camBar.Value = saved;
         }
 
         captionsToggle?.SetSilent(PlayerPrefs.GetInt(k_Captions, 0) == 1);
@@ -230,6 +237,8 @@ public class SettingsManager : MonoBehaviour
 
     // ─── General ──────────────────────────────────────────────────────────────
     public void SetMouseSensitivity(float value) => PlayerPrefs.SetFloat(k_Mouse, value);
+
+    public void SetCameraSensitivity(float value) => PlayerPrefs.SetFloat(k_Cam, value);
 
     public void SetCaptions(bool value) => PlayerPrefs.SetInt(k_Captions, value ? 1 : 0);
 

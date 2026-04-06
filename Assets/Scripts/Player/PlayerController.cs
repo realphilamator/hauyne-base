@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Mouse Look")]
     /// <summary>Horizontal mouse sensitivity. Loaded from PlayerPrefs at start ("MouseSensitivity").</summary>
-    public float mouseSensitivity = 3f;
+    public float camSensitivity = 5f;
 
     [Header("References")]
     /// <summary>The CharacterController used for movement. Auto-assigned if not set in the Inspector.</summary>
@@ -69,8 +69,7 @@ public class PlayerController : MonoBehaviour
         playerRotation = transform.rotation;
         targetYaw = transform.eulerAngles.y;
 
-        // Load mouse sensitivity from settings, defaulting to 1 if not saved
-        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 3f);
+        camSensitivity = PlayerPrefs.GetFloat("CameraSensitivity", 4f);
 
         if (cc == null)
             cc = GetComponent<CharacterController>();
@@ -96,7 +95,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void MouseMove()
     {
-        targetYaw += Input.GetAxis("Mouse X") * mouseSensitivity * Time.timeScale;
+        targetYaw += Input.GetAxis("Mouse X") * camSensitivity * Time.timeScale;
         playerRotation.eulerAngles = new Vector3(playerRotation.eulerAngles.x, targetYaw, 0f);
         transform.rotation = playerRotation;
     }
