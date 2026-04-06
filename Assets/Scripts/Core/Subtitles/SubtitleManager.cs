@@ -10,6 +10,24 @@ public class SubtitleManager : Singleton<SubtitleManager>
     private List<SubtitleController> active = new List<SubtitleController>();
     private Dictionary<ManagedAudioSource, SubtitleController> sourceMap = new Dictionary<ManagedAudioSource, SubtitleController>();
 
+    public static new SubtitleManager Instance
+    {
+        get
+        {
+            if (Exist) return (SubtitleManager)(object)Singleton<SubtitleManager>.Instance;
+            GameObject prefab = Resources.Load<GameObject>("SubtitleManager");
+            if (prefab == null)
+            {
+                Debug.LogError("SubtitleManager prefab not found in Resources!");
+                return null;
+            }
+            GameObject go = Instantiate(prefab);
+            go.name = "SubtitleManager";
+            DontDestroyOnLoad(go);
+            return go.GetComponent<SubtitleManager>();
+        }
+    }
+
     public void SpawnSubtitle(ManagedAudioSource source, Transform soundTransform, string key)
     {
         if (!subtitlesEnabled) return;

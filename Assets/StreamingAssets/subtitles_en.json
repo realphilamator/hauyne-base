@@ -25,13 +25,16 @@
             "value": "*Swinging door opens*"
         },
         {
-<<<<<<< Updated upstream
             "key": "Sfx_Fountain_Drink",
             "value": "*Slurp*"
-=======
+        },
+        {
             "key": "Sfx_Baldi_Slap",
             "value": "*SLAP*"
->>>>>>> Stashed changes
+        },
+        {
+            "key": "Vfx_Baldi_Apple",
+            "value": "An Apple? For me? Thanks!"
         }
     ]
 }
