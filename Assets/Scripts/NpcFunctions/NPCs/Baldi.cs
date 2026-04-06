@@ -22,7 +22,7 @@ public class Baldi : NPC
 
     public BaldiState currentState = BaldiState.Wandering;
     public bool antiHearing = false;
-    bool wheredYouGo = false, eatingApple = false;
+    bool wheredYouGo = false, canMove = true;
     float timeToMove = 0f, storedSpeed = 0f, moveFrames = 0f, tempAnger = 0f, anger = 0f, loseTimer = 0f, antiHearingTime = 30f, currentPriority = 0f;
     [SerializeField] float baseTime = 3f, baldiWait = 3f;
     [SerializeField] KillerScript killerScript;
@@ -43,6 +43,8 @@ public class Baldi : NPC
     [SerializeField] BaldiAudio crunchSound = new BaldiAudio { subtitleKey = "Sfx_Crunch", length = 0.6f };
     [SerializeField] BaldiAudio yumVoice = new BaldiAudio { subtitleKey = "Vfx_Baldi_Yum", length = 1f };
     [SerializeField] BaldiAudio appleVoice = new BaldiAudio { subtitleKey = "Vfx_Baldi_Apple", length = 3.5f };
+
+    [SerializeField] List<BaldiAudio> praiseVoices = new List<BaldiAudio>();
 
     [Space(15)]
 
@@ -70,7 +72,7 @@ public class Baldi : NPC
     {
         coolDown = Mathf.Max(0f, coolDown - Time.deltaTime);
 
-        if (timeToMove > 0f && !eatingApple)
+        if (timeToMove > 0f && canMove)
         {
             timeToMove -= Time.deltaTime;
             if (timeToMove <= 0f)
@@ -135,13 +137,16 @@ public class Baldi : NPC
             case BaldiState.Eating:
                 if (agent.hasPath) agent.ResetPath();
                 break;
+            case BaldiState.Praise:
+                if (agent.hasPath) agent.ResetPath();
+                break;
         }
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (spottedPlayer && !eatingApple)
+        if (spottedPlayer && canMove)
             currentState = BaldiState.Targetting;
 
         if (moveFrames > 0f)
@@ -218,8 +223,9 @@ public class Baldi : NPC
     [ContextMenu("Eat Apple")]
     void AppleMuncher()
     {
+        killerScript.canKill = false;
         currentState = BaldiState.Eating;
-        eatingApple = true;
+        canMove = false;
         baldiAnimator.SetTrigger("EatIdle");
         PlaySound(vfxAudio, vfxSource, appleVoice);
         StartCoroutine(appleMunching());
@@ -229,33 +235,62 @@ public class Baldi : NPC
     {
         yield return new WaitForSeconds(appleVoice.clip.length + 1f);
         float timer = 0f;
-        float duration = 15f;
+        float duration = 10f;
+
+        float interval = 0.05f;
+        float yumInterval = 2f;
+        float yumTimer = 0f;
 
         baldiAnimator.SetBool("Eating", true);
 
         while (timer < duration)
         {
-            sfxSource.PlayOneShot(crunchSound.clip, crunchSound.subtitleKey, crunchSound.length);
+            yumTimer += interval;
 
-            if (Mathf.FloorToInt(timer) % 3 == 0)
-                sfxSource.PlayOneShot(eatSound.clip, eatSound.subtitleKey, eatSound.length);
-
-            if (Mathf.FloorToInt(timer) % 2 == 0)
+            if (yumTimer >= yumInterval)
+            {
                 vfxSource.PlayOneShot(yumVoice.clip, yumVoice.subtitleKey, yumVoice.length);
+                yumTimer = 0f;
+            }
 
-            timer += Time.deltaTime;
+            BaldiAudio selectedAudio = Random.Range(0, 2) == 0 ? eatSound : crunchSound;
+            sfxSource.PlayOneShot(selectedAudio.clip, selectedAudio.subtitleKey, selectedAudio.length);
+
+            yield return new WaitForSeconds(interval);
+
+            timer += interval;
             yield return null;
         }
 
-        eatingApple = false;
+        canMove = true;
         baldiAnimator.SetBool("Eating", false);
         currentState = BaldiState.Wandering;
+        killerScript.canKill = true;
         yield break;
     }
 
-    public void Praise(float duration)
+    [ContextMenu("Praise")]
+    public void Praise()
     {
+        BaldiAudio selectedPraise = praiseVoices[Random.Range(0, praiseVoices.Count)];
+        canMove = false;
+        currentState = BaldiState.Praise;
+        killerScript.canKill = false;
+        PlaySound(vfxAudio, vfxSource, selectedPraise);
+        StartCoroutine(PraiseCoroutine(selectedPraise.clip.length));
+    }
 
+    IEnumerator PraiseCoroutine(float duration)
+    {
+        baldiAnimator.enabled = false;
+        lipSyncAnim.enabled = true;
+        yield return new WaitForSeconds(duration + 3f);
+        lipSyncAnim.enabled = false;
+        baldiAnimator.enabled = true;
+        currentState = BaldiState.Wandering;
+        canMove = true;
+        killerScript.canKill = true;
+        yield break;
     }
 
     void PlaySound(AudioSource source, ManagedAudioSource mas, BaldiAudio sound)
