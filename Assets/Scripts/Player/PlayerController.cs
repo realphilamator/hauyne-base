@@ -30,12 +30,19 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     /// <summary>The CharacterController used for movement. Auto-assigned if not set in the Inspector.</summary>
     public CharacterController cc;
+    [SerializeField] GameObject jumpRopePrefab;
+    GameObject jumpropeScreen;
+    public Playtime whichBrat;
+
+    [Space(15)]
 
     // -------------------------------------------------------------------------
     // Public State
     // -------------------------------------------------------------------------
 
-    public bool inFaculty = false, inOffice = false;
+    public bool inFaculty = false;
+
+    public bool inOffice = false;
 
     public float guiltTime = 0f;
 
@@ -67,7 +74,7 @@ public class PlayerController : MonoBehaviour
     private float playerSpeed;
     private float targetYaw;        // Accumulated horizontal mouse input, applied directly each frame
     private Quaternion playerRotation;
-    private Vector3 moveDirection;
+    private Vector3 moveDirection, frozenPosition = Vector3.zero;
     private Camera playerCamera;
 
     private InputManager input;
@@ -99,6 +106,9 @@ public class PlayerController : MonoBehaviour
         // Keep the player at a fixed height — vertical movement is not supported
         if (canMove)
             transform.position = new Vector3(transform.position.x, height, transform.position.z);
+
+        if (jumpRope && whichBrat != null && (transform.position - frozenPosition).magnitude >= 1f)
+            ActivateJumpRope(false, whichBrat);
 
         MouseMove();
         PlayerMove();
@@ -191,5 +201,26 @@ public class PlayerController : MonoBehaviour
     {
         if (guiltTime > 0f)
             guiltTime -= Time.deltaTime;
+    }
+
+    public void ActivateJumpRope(bool state, Playtime brat, bool success = false)
+    {
+        if (state)
+        {
+            jumpRope = true;
+            frozenPosition = transform.position;
+            jumpropeScreen = Instantiate(jumpRopePrefab);
+            whichBrat = brat;
+        }
+        else
+        {
+            jumpRope = false;
+            Destroy(jumpropeScreen);
+            if (!success)
+                whichBrat.Disappoint();
+            else
+                whichBrat.Happy();
+            whichBrat = null;
+        }
     }
 }

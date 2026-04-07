@@ -38,6 +38,11 @@ public class CameraScript : MonoBehaviour
     /// </summary>
     public KillerScript killer;
 
+    public float jumpHeight = 0f, initialVelocity = 5f;
+    Vector3 jumpHeightVector = Vector3.zero;
+    float velocity = 0f;
+    const float gravity = 10f;
+
     // -------------------------------------------------------------------------
     // Unity Messages
     // -------------------------------------------------------------------------
@@ -49,7 +54,17 @@ public class CameraScript : MonoBehaviour
 
         if (ps.jumpRope)
         {
-
+            velocity -= gravity * Time.deltaTime;
+            jumpHeight += velocity * Time.deltaTime;
+            if (jumpHeight <= 0f)
+            {
+                jumpHeight = 0f;
+                if (Singleton<InputManager>.Instance.GetActionKey(InputAction.Jump))
+                {
+                    velocity = initialVelocity;
+                }
+            }
+            jumpHeightVector = new Vector3(0f, jumpHeight, 0f);
         }
 
         // Snap to look behind while the action key is held, return forward when released
@@ -64,6 +79,11 @@ public class CameraScript : MonoBehaviour
         {
             transform.position = killer.transform.position + killer.transform.forward * -2f + new Vector3(0f, killer.killHeight, 0f);//Puts the camera in front of Baldi
             transform.LookAt(new Vector3(killer.transform.position.x, killer.transform.position.y + killer.killHeight, killer.transform.position.z));//Makes the player look at baldi with an offset so the camera doesn't look at the feet
+        }
+        else if (ps.jumpRope)
+        {
+            transform.position = player.transform.position + jumpHeightVector;
+            transform.rotation = player.transform.rotation;
         }
         else
         {

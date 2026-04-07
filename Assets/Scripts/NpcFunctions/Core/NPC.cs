@@ -32,4 +32,10 @@ public class NPC : MonoBehaviour
             }
         }
     }
+
+    protected virtual void TargetPlayer()
+    {
+        agent.SetDestination(player.transform.position);
+        coolDown = 1f;
+    }
 }
