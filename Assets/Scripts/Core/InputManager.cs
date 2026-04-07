@@ -272,7 +272,7 @@ public class InputManager : Singleton<InputManager>
             case InputAction.Slot3: return new InputBinding(KeyCode.Alpha4);
             case InputAction.Slot4: return new InputBinding(KeyCode.Alpha5);
             case InputAction.Run: return new InputBinding(KeyCode.LeftShift);
-            case InputAction.LookBehind: return new InputBinding(KeyCode.C);
+            case InputAction.LookBehind: return new InputBinding(KeyCode.Space);
             case InputAction.Jump: return new InputBinding(KeyCode.Space);
             case InputAction.PauseOrCancel: return new InputBinding(KeyCode.Escape);
             default: return new InputBinding(KeyCode.None);
